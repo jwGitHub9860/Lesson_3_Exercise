@@ -37,6 +37,7 @@ protected:
 
 private:
     static int _idCnt; // global variable for counting object ids
+    static mutex _mtxCout;  // static mutex
 };
 
 #endif
