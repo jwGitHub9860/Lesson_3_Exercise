@@ -5,6 +5,8 @@
 #include <thread>
 #include <mutex>
 
+using namespace std;
+
 enum ObjectType
 {
     noObject,
@@ -34,10 +36,10 @@ protected:
     int _id;                          // every traffic object has its own unique id
     double _posX, _posY;              // vehicle position in pixels
     std::vector<std::thread> threads; // holds all threads that have been launched within this object
+    static mutex _mtxCout;  // static mutex
 
 private:
     static int _idCnt; // global variable for counting object ids
-    static mutex _mtxCout;  // static mutex
 };
 
 #endif
