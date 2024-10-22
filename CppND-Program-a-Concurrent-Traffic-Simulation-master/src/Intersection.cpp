@@ -3,7 +3,6 @@
 #include <chrono>
 #include <future>
 #include <random>
-#include <mutex>
 
 #include "Street.h"
 #include "Intersection.h"
@@ -16,26 +15,24 @@ using namespace std;
 // L3.1 : Safeguard all accesses to the private members _vehicles and _promises with an appropriate locking mechanism, 
 // that will not cause a deadlock situation where access to the resources is accidentally blocked.
 
-mutex mtx;  // defines mutex
+
 
 int WaitingVehicles::getSize()
 {
-    mtx.lock();
+    lock_guard<mutex> lock(mtx);   // mutex locks ENTIRE Scope
     return _vehicles.size();
-    mtx.unlock();
 }
 
 void WaitingVehicles::pushBack(std::shared_ptr<Vehicle> vehicle, std::promise<void> &&promise)
 {
-    mtx.lock();
+    lock_guard<mutex> lock(mtx);   // mutex locks ENTIRE Scope
     _vehicles.push_back(vehicle);
     _promises.push_back(std::move(promise));
-    mtx.unlock();
 }
 
 void WaitingVehicles::permitEntryToFirstInQueue()
 {
-    mtx.lock();
+    lock_guard<mutex> lock(mtx);   // mutex locks ENTIRE Scope
     // get entries from the front of both queues
     auto firstPromise = _promises.begin();
     auto firstVehicle = _vehicles.begin();
@@ -46,7 +43,6 @@ void WaitingVehicles::permitEntryToFirstInQueue()
     // remove front elements from both queues
     _vehicles.erase(firstVehicle);
     _promises.erase(firstPromise);
-    mtx.unlock();
 }
 
 /* Implementation of class "Intersection" */

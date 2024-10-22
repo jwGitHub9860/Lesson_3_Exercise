@@ -7,6 +7,8 @@
 #include <memory>
 #include "TrafficObject.h"
 
+using namespace std;
+
 // forward declarations to avoid include cycle
 class Street;
 class Vehicle;
@@ -25,6 +27,7 @@ public:
 private:
     std::vector<std::shared_ptr<Vehicle>> _vehicles;          // list of all vehicles waiting to enter this intersection
     std::vector<std::promise<void>> _promises; // list of associated promises
+    mutex mtx;  // defines mutex
 };
 
 class Intersection : public TrafficObject
