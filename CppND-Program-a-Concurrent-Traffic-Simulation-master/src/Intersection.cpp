@@ -76,9 +76,9 @@ std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<
 void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 {
     // L3.3 : Ensure that the text output locks the console as a shared resource. Use the mutex _mtxCout you have added to the base class TrafficObject in the previous task. Make sure that in between the two calls to std-cout at the beginning and at the end of addVehicleToQueue the lock is not held. 
-    _mtxCout.lock();
+    unique_lock<mutex> lck(_mtxCout);   // MUST USE "unique_lock" to Manually lock & unlock mutex
     std::cout << "Intersection #" << _id << "::addVehicleToQueue: thread id = " << std::this_thread::get_id() << std::endl;
-    _mtxCout.unlock();
+    lck.unlock();
 
     // add new vehicle to the end of the waiting line
     std::promise<void> prmsVehicleAllowedToEnter;
@@ -87,9 +87,9 @@ void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 
     // wait until the vehicle is allowed to enter
     ftrVehicleAllowedToEnter.wait();
-    _mtxCout.lock();
+    lck.lock();
     std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " is granted entry." << std::endl;
-    _mtxCout.unlock();
+    lck.unlock();
 }
 
 void Intersection::vehicleHasLeft(std::shared_ptr<Vehicle> vehicle)
